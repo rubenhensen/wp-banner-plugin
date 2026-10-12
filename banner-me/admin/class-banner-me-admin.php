@@ -162,8 +162,8 @@ class Banner_Me_Admin {
 					<tr>
 						<th><label for="custom_text">Aangepaste tekst</label></th>
 						<td>
-							<input type="text" id="custom_text" name="custom_text" class="regular-text" value="<?php echo esc_attr( $banner['custom_text'] ); ?>" placeholder="Bijv. Gesloten van 15 juli t/m 5 augustus">
-							<p class="description">Laat leeg voor de standaard tekst: "Gesloten van [datum] t/m [datum]"</p>
+							<input type="text" id="custom_text" name="custom_text" class="regular-text" value="<?php echo esc_attr( $banner['custom_text'] ); ?>" placeholder="Bijv. Gesloten van woensdag 15 juli t/m woensdag 5 augustus">
+							<p class="description">Laat leeg voor de standaard tekst: "Gesloten van [dag datum] t/m [dag datum]", of "Gesloten op [dag datum]" bij één dag.</p>
 						</td>
 					</tr>
 					<tr>
@@ -173,7 +173,7 @@ class Banner_Me_Admin {
 				</table>
 
 				<p class="description" style="margin-bottom: 16px;">De banner wordt automatisch zichtbaar 2 weken voor de "gesloten van" datum en verdwijnt na de "gesloten t/m" datum.<br>
-				In dezelfde periode staat de sluiting ook onder de tabel met openingstijden. In de week zelf staat bij de gesloten dagen "Gesloten op [datum]".</p>
+				In dezelfde periode staat de sluiting ook onder de tabel met openingstijden. Valt de sluiting in deze of volgende week, dan toont die pagina die weken met datums, met "Gesloten" bij de gesloten dagen.</p>
 
 				<?php submit_button( 'Opslaan' ); ?>
 				<a href="<?php echo esc_url( $list_url ); ?>">Annuleren</a>
@@ -309,7 +309,16 @@ class Banner_Me_Admin {
 	}
 
 	private function get_default_text( $banner ) {
-		return 'Gesloten van ' . $this->format_date_dutch( $banner['from_date'] ) . ' t/m ' . $this->format_date_dutch( $banner['to_date'] );
+		if ( $banner['from_date'] === $banner['to_date'] ) {
+			return 'Gesloten op ' . $this->format_day_dutch( $banner['from_date'] );
+		}
+		return 'Gesloten van ' . $this->format_day_dutch( $banner['from_date'] ) . ' t/m ' . $this->format_day_dutch( $banner['to_date'] );
+	}
+
+	// "vrijdag 23 oktober"
+	private function format_day_dutch( $date_str ) {
+		$weekdays = array( 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag' );
+		return $weekdays[ (int) date( 'N', strtotime( $date_str ) ) - 1 ] . ' ' . $this->format_date_dutch( $date_str );
 	}
 
 	private function format_date_dutch( $date_str ) {

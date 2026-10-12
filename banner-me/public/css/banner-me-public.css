@@ -31,3 +31,46 @@
 .banner-me-hours-note {
   margin-top: 1rem;
 }
+
+.banner-me-hours table + table {
+  margin-top: 2rem;
+}
+
+.banner-me-hours caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 700;
+  padding-bottom: 0.5rem;
+}
+
+.banner-me-today :is(th, td) {
+  color: var(--wp--preset--color--blue, #2457be);
+  font-weight: 700;
+}
+
+.banner-me-week {
+  table-layout: fixed;
+}
+
+.banner-me-week th {
+  width: 50%;
+}
+
+.banner-me-today-wrap {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+}
+
+.banner-me-today-label {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  background-color: var(--wp--preset--color--blue, #2457be);
+  color: #ffffff;
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: 0.1em;
+}
