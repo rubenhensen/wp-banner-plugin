@@ -1,118 +1,86 @@
 <?php
 
-/**
- * The public-facing functionality of the plugin.
- *
- * @link       http://example.com
- * @since      1.0.0
- *
- * @package    Banner_Me
- * @subpackage Banner_Me/public
- */
-
-/**
- * The public-facing functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
- *
- * @package    Banner_Me
- * @subpackage Banner_Me/public
- * @author     Your Name <email@example.com>
- */
 class Banner_Me_Public {
 
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $banner_me    The ID of this plugin.
-	 */
 	private $banner_me;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
 	private $version;
 
-	/**
-	 * Initialize the class and set its properties.
-	 *
-	 * @since    1.0.0
-	 * @param      string    $banner_me       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
-	 */
 	public function __construct( $banner_me, $version ) {
-
 		$this->banner_me = $banner_me;
 		$this->version = $version;
-
 	}
 
-	/**
-	 * Register the stylesheets for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
 	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Banner_Me_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Banner_Me_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->banner_me, plugin_dir_url( __FILE__ ) . 'css/banner-me-public.css', array(), $this->version, 'all' );
-
 	}
 
-	/**
-	 * Register the JavaScript for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
 	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Banner_Me_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Banner_Me_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( $this->banner_me, plugin_dir_url( __FILE__ ) . 'js/banner-me-public.js', array( 'jquery' ), $this->version, false );
-
 	}
 
 	public function add_banner() {
-		$text = get_option('banner_text');
-		$visible = get_option('banner_visible');
+		$banners = get_option( 'banner_me_banners', array() );
+		if ( empty( $banners ) ) {
+			return;
+		}
+
+		$today = current_time( 'Y-m-d' );
+
+		// Filter to visible banners
+		$visible = array();
+		foreach ( $banners as $banner ) {
+			if ( empty( $banner['from_date'] ) || empty( $banner['to_date'] ) ) {
+				continue;
+			}
+			$visible_from = date( 'Y-m-d', strtotime( $banner['from_date'] . ' -14 days' ) );
+			if ( $today >= $visible_from && $today <= $banner['to_date'] ) {
+				$visible[] = $banner;
+			}
+		}
+
+		if ( empty( $visible ) ) {
+			return;
+		}
+
+		// Pick the one with the closest (earliest) from_date
+		usort( $visible, function( $a, $b ) {
+			return strcmp( $a['from_date'], $b['from_date'] );
+		});
+		$banner = $visible[0];
+
+		// Generate text
+		if ( ! empty( $banner['custom_text'] ) ) {
+			$text = $banner['custom_text'];
+		} else {
+			$text = 'Gesloten van ' . $this->format_date_dutch( $banner['from_date'] ) . ' t/m ' . $this->format_date_dutch( $banner['to_date'] );
+		}
+
+		$color = ! empty( $banner['color'] ) ? $banner['color'] : '#3c8302';
+
 		?>
-		<div class="alert" <?php echo $visible ? '' : 'hidden'; ?>>
-			<div class="alert-text">
-				<span><?php echo isset( $text ) ? esc_attr( $text ) : ''; ?></span>
-				<span class="alert-button" onclick="this.parentElement.style.display='none';">&times;</span>
+		<div class="banner-me-alert" style="background-color: <?php echo esc_attr( $color ); ?>;">
+			<div class="banner-me-alert-text">
+				<span><?php echo esc_html( $text ); ?></span>
+				<span class="banner-me-alert-close" onclick="this.closest('.banner-me-alert').style.display='none';">&times;</span>
 			</div>
-		</div> 
+		</div>
 		<?php
 	}
 
+	private function format_date_dutch( $date_str ) {
+		$months = array(
+			'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+			'juli', 'augustus', 'september', 'oktober', 'november', 'december',
+		);
+		$ts = strtotime( $date_str );
+		$day = date( 'j', $ts );
+		$month = $months[ (int) date( 'n', $ts ) - 1 ];
+		$year = date( 'Y', $ts );
+		$current_year = current_time( 'Y' );
+
+		if ( $year !== $current_year ) {
+			return $day . ' ' . $month . ' ' . $year;
+		}
+		return $day . ' ' . $month;
+	}
 }
-
-

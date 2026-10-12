@@ -1,71 +1,40 @@
-/**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
- */
+.banner-me-color-swatch {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
 
-  /* The switch - the box around the slider */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-  
-  /* Hide default HTML checkbox */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  /* The slider */
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-  
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-  
-  input:checked + .slider {
-    background-color: #2196F3;
-  }
-  
-  input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-  }
-  
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
-  
-  .slider.round:before {
-    border-radius: 50%;
-  } 
+.banner-me-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
 
-.banner-text {
-    width: 100%;
+.banner-me-status--active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.banner-me-status--scheduled {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.banner-me-status--expired {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.banner-me-delete {
+  color: #a00;
+}
+
+.banner-me-delete:hover {
+  color: #dc3232;
 }
