@@ -176,6 +176,7 @@ class Banner_Me {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'wp_body_open', $plugin_public, 'add_banner' );
+		$this->loader->add_filter( 'render_block_core/table', $plugin_public, 'update_hours_table' );
 
 	}
 

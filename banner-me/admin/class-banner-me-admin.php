@@ -172,7 +172,8 @@ class Banner_Me_Admin {
 					</tr>
 				</table>
 
-				<p class="description" style="margin-bottom: 16px;">De banner wordt automatisch zichtbaar 2 weken voor de "gesloten van" datum en verdwijnt na de "gesloten t/m" datum.</p>
+				<p class="description" style="margin-bottom: 16px;">De banner wordt automatisch zichtbaar 2 weken voor de "gesloten van" datum en verdwijnt na de "gesloten t/m" datum.<br>
+				In dezelfde periode staat de sluiting ook onder de tabel met openingstijden. In de week zelf staat bij de gesloten dagen "Gesloten op [datum]".</p>
 
 				<?php submit_button( 'Opslaan' ); ?>
 				<a href="<?php echo esc_url( $list_url ); ?>">Annuleren</a>
